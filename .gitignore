@@ -5,6 +5,7 @@
 # Ignore data files
 data/
 *.RData
+*.html
 
 
 # Ignore temporary files
