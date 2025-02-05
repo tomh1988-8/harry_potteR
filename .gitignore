@@ -1,0 +1,26 @@
+# Ignore R project files
+*.Rproj
+.Rproj.user/
+
+# Ignore data files
+data/
+*.RData
+
+
+# Ignore temporary files
+*.tmp
+*.log
+*.out
+*.DS_Store
+*.swp
+*.bak
+
+# Ignore history files
+.Rhistory
+.Rapp.history
+
+# Ignore cache and package-related files
+.RData
+.Ruserdata
+renv/
+__pycache__/
