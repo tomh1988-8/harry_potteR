@@ -6,6 +6,7 @@
 data/
 *.RData
 *.html
+*.yml
 
 
 # Ignore temporary files
@@ -25,3 +26,5 @@ data/
 .Ruserdata
 renv/
 __pycache__/
+
+/.quarto/
