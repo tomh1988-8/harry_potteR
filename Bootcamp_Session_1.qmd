@@ -92,7 +92,7 @@ print("Hello world!")
 
 Great news, set up is almost complete! All that's needed beforehand is a quick chat about libraries. Remember earlier when I said that coding is like having a conversation with a machine? Well some conversations have been so important and/or difficult to have that others have went to the trouble of saving them for us. They centre around a relatively specific purpose, e.g., anything from visualising data to editing photos. Let's use a silly example to illustrate the point. Someone, somewhere, for some reason went to the trouble of creating a package that allows us to add emojis to our plots. They thought (correctly) that I might also want emojis on my plots. So they created a package giving me everything I needed to ask my machine to add the emojis. All I need to do is install the package, and load in the library for it. Let's go, I'm going to write the code that installs the package into my console (preference, and I only need to run it once):
 
-![](harry_potter_files/libraries.png)
+![](materials/images/libraries.png)
 
 ```{r}
 # Accio emojifont!
