@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Tom Hunter - Data Scientist (City and Guilds)">
+
+<title>Session 3: Defence Against the Dark Arts</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Bootcamp_Session_3_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Bootcamp_Session_3_files/libs/quarto-html/quarto.js"></script>
+<script src="Bootcamp_Session_3_files/libs/quarto-html/popper.min.js"></script>
+<script src="Bootcamp_Session_3_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Bootcamp_Session_3_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Bootcamp_Session_3_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Bootcamp_Session_3_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Bootcamp_Session_3_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Bootcamp_Session_3_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Bootcamp_Session_3_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Session 3: Defence Against the Dark Arts</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Tom Hunter - Data Scientist (City and Guilds) </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p><img src="materials/images/defence-against-the-dark-arts-teachers.jpg" class="img-fluid" width="600"></p>
+<p>Word has gotten out that you are a confident coder now. With that, the data requests made of you have grown more serious, darker. We must prepare ourselves. <code>We must learn Defence Against the Dark Arts - ways to scale up our code so that we can efficiently manage larger or more complicated tasks.</code> In this section we are going to learn these techniques by simulating a deadly magical battle, much like the final battle in the Deathly Hallows. In order to survive we will need to acquaint ourselves with conditional logic, functions, and loops.</p>
+<p>If you’ll allow a quick aside from the dark arts metaphor - a positive spin on this next step is that you are in a place where you are getting grander and more exciting ideas about how to approach analysing data and building data products. With a little bit of upfront investment in some new techniques, this process can be fun and the results more reliable, reproducible, and accessible to others, so let’s begin!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Accio libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(openxlsx)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Accio data</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>spells <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">file =</span> <span class="fu">here</span>(<span class="st">"materials"</span>, <span class="st">"data"</span>, <span class="st">"spells.csv"</span>))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>characters <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">file =</span> <span class="fu">here</span>(<span class="st">"materials"</span>, <span class="st">"data"</span>, <span class="st">"Characters.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="conditional-logic" class="level3">
+<h3 class="anchored" data-anchor-id="conditional-logic">Conditional Logic</h3>
+<p>A compulsory reminder which is relevant now more than ever is to not worry about the commas and squiggly lines, <code>focus instead on the gist - the basic principles of what we are setting out to do and why.</code> If you have these, then you can always seek out one of many available resources online to fill in the gaps if and when needed.</p>
+<p>Think of an =IF() or an =IFELSE() in Excel. The basic idea that we carry out an operation based on a condition is one of the most fundamental and powerful principles in programming. In Excel, however, <code>it becomes quite laborious quite quickly to extend the logic within an =IF() statement to accomodate more complicated tasks and the formula quickly becomes unmanageable</code>. This is a lot more manageable in R and after you wrap your head around it you can achieve spectacularly complex feats of data manipulation and transformation.</p>
+<p>The following examples relies on data sets - one on Harry Potter characters, and the other one spells. Check them out below:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(characters)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   166 obs. of  9 variables:
+ $ Character.ID  : int  1 2 3 4 5 6 7 8 9 10 ...
+ $ Character.Name: chr  "Harry Potter" "Ron Weasley" "Hermione Granger" "Albus Dumbledore" ...
+ $ Species       : chr  "Human" "Human" "Human" "Human" ...
+ $ Gender        : chr  "Male" "Male" "Female" "Male" ...
+ $ House         : chr  "Gryffindor" "Gryffindor" "Gryffindor" "Gryffindor" ...
+ $ Patronus      : chr  "Stag" "Jack Russell Terrier" "Otter" "Phoenix" ...
+ $ Wand..Wood.   : chr  "Holly" "" "Vine" "Elder" ...
+ $ Wand..Core.   : chr  "Phoenix Feather" "" "Dragon Heartstring" "Thestral Tail Hair" ...
+ $ student       : chr  "y" "y" "y" "n" ...</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(spells)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   61 obs. of  5 variables:
+ $ Spell.ID   : int  1 2 3 4 5 6 7 8 9 10 ...
+ $ Incantation: chr  "Accio" "Aguamenti" "Alarte Ascendare" "Alohomora" ...
+ $ Spell.Name : chr  "Summoning Charm" "Water-Making Spell" "Launch an object up into the air" "Unlocking Charm" ...
+ $ Effect     : chr  "Summons an object" "Conjures water" "Rockets target upward" "Unlocks target" ...
+ $ Light      : chr  "" "Icy blue" "Red" "Blue" ...</code></pre>
+</div>
+</div>
+<p>These simple dataframes (alongside having seen the films!) are perfect for practicing some conditional logic. Let’s write some code to print out the name and effect of any spell in spells. However, Hermoine is around and if we mispronounce her favourite spell or try and cast a nonsense spell, she’s going to call us out on it. Use the helper code to get the unique values of spells in the spells dataframe and try some different spells!</p>
+<p>Spoken translation:</p>
+<p>“<code>Let's save the spell we want to apply some conditional logic too in an object called spell_cast. If the spell cast is exactly equal to Wingardium Leviosa, then print out some guidance on how to properly pronounce the spell. Apart from that exception, if the spell exists in the Incantation column of the spells dataframe then print out the spell name and the effect from the Effect column. If anything else is input other than that already accounted for print out that it is not a spell.</code>”</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># unique(spells$Incantation)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>spell_cast <span class="ot">&lt;-</span> <span class="st">"Immobulus"</span> <span class="co"># Change this to test different spells</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the spell is valid</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (spell_cast <span class="sc">==</span> <span class="st">"Wingardium Leviosa"</span>) {</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"It's leviOsa, not levioSA!"</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> <span class="cf">if</span> (spell_cast <span class="sc">%in%</span> spells<span class="sc">$</span>Incantation) {</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  spell_info <span class="ot">&lt;-</span> spells <span class="sc">|&gt;</span> <span class="fu">filter</span>(Incantation <span class="sc">==</span> spell_cast)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">glue</span>(<span class="st">"Spell: {spell_info$Incantation}, Effect: {spell_info$Effect}"</span>))</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"Not a spell, try again."</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Spell: Immobulus, Effect: Stops movement and actions of the target</code></pre>
+</div>
+</div>
+</section>
+<section id="functions" class="level3">
+<h3 class="anchored" data-anchor-id="functions">Functions</h3>
+<p>My guess is that you will noticed two things after having tried out a few spells. The first is that achieving a different output by only changing one value feels very powerful. The second is that having to run all that code every time a new spell is cast gets clunky and painful. Imagine you wanted to try out 100 spells in the same script? The code would get out of hand very quickly and the resulting script would be very messy, manual, and repetitive.</p>
+<p>That’s why we have functions - we wrap code that we want to run again and again with slightly different inputs into functions. The result of this is that we can stash away the code somewhere safe and out of the way and reap their benefits with very little code, typically just one line. A whole world of possibilities opens up when you start writing functions, the most immediate of which are that your code can be scaled up, shared, and tested much more effectively.</p>
+<p>Here is the some code as the example above wrapped in a function called spell_practice. This function takes one argument called spell_cast which allows the user to cast a spell with great ease. We say “wrapped” in a function, because all we did was take our existing code and wrap it with this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>spell_practice <span class="ot">&lt;-</span> <span class="cf">function</span>(spell_cast) {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># insert magical code here</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># unique(spells$Incantation)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>spell_practice <span class="ot">&lt;-</span> <span class="cf">function</span>(spell_cast) {</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (spell_cast <span class="sc">==</span> <span class="st">"Wingardium Leviosa"</span>) {</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">"It's leviOsa, not levioSA!"</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (spell_cast <span class="sc">%in%</span> spells<span class="sc">$</span>Incantation) {</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    spell_info <span class="ot">&lt;-</span> spells <span class="sc">|&gt;</span> <span class="fu">filter</span>(Incantation <span class="sc">==</span> spell_cast)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">glue</span>(<span class="st">"Spell: {spell_info$Incantation}, Effect: {spell_info$Effect}"</span>))</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">"Not a spell, try again."</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And now look how easy it is to cast a spell:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># unique(spells$Incantation)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">spell_practice</span>(<span class="at">spell_cast =</span> <span class="st">"Expelliarmus"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Spell: Expelliarmus, Effect: Disarms an opponent</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># unique(spells$Incantation)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">spell_practice</span>(<span class="at">spell_cast =</span> <span class="st">"Wingardium Leviosa"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "It's leviOsa, not levioSA!"</code></pre>
+</div>
+</div>
+<p>Let’s step it up a bit and re-enact a full magical battle. Rather than obsess over the actual contents of the battle_simulator function below, I want to try and sell to you how much time and effort was saved and how much more readable the code is now that I don’t have to copy and paste and change the code slightly to accomodate all of the multiple variations of it I might want to run. Being able to call it in only one line also makes it practical to use my function in more ambitious ways, which we’ll look at below.</p>
+<p>Spoken translation:</p>
+<p>“<code>Let's write a magic battle simulation function with the following rules:</code></p>
+<p><code>1. If you cast Hermoine's favourite spell, she will correct your pronunciation.</code></p>
+<p><code>2. If you cast an unforgiveable spell and are a Hogwart's student you will be expelled and this will be your House status in the characters dataframe.</code></p>
+<p><code>3. If you cast a killing spell the character it was cast on will become a ghost in the characters dataframe.</code></p>
+<p><code>4. If you try and kill Harry with a spell it will not work because he is the boy who lived.</code></p>
+<p><code>5. The modified characters dataframe will be returned to you to ensure that the battle was carried out fairly</code>”</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># unique(spells$Incantation)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># unique(characters$Character.Name)</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>battle_simulator <span class="ot">&lt;-</span> <span class="cf">function</span>(character_name, spell_cast, spell_cast_to) {</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Unforgivable curses</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  unforgivable_curses <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Avada Kedavra"</span>, <span class="st">"Crucio"</span>, <span class="st">"Imperio"</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Initialize characters_conditionals_example_1 to the original characters dataset</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  characters_conditionals_example_1 <span class="ot">&lt;-</span> characters</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  modified <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Check if the spell is valid</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (spell_cast <span class="sc">==</span> <span class="st">"Wingardium Leviosa"</span>) {</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">"It's leviOsa, not levioSA!"</span>)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (spell_cast <span class="sc">%in%</span> unforgivable_curses) {</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If the spell is unforgivable, expel the character</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    characters_conditionals_example_1 <span class="ot">&lt;-</span> characters_conditionals_example_1 <span class="sc">%&gt;%</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">House =</span> <span class="fu">if_else</span>(</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>        Character.Name <span class="sc">==</span> character_name <span class="sc">&amp;</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>          student <span class="sc">==</span> <span class="st">"y"</span> <span class="sc">&amp;</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>          House <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Gryffindor"</span>, <span class="st">"Slytherin"</span>, <span class="st">"Hufflepuff"</span>, <span class="st">"Ravenclaw"</span>),</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>        <span class="st">"expelled from hogwarts"</span>,</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>        House</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>      ))</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (characters_conditionals_example_1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Character.Name <span class="sc">==</span> character_name, student <span class="sc">==</span> <span class="st">"y"</span>) <span class="sc">%&gt;%</span> <span class="fu">nrow</span>() <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(<span class="fu">glue</span>(<span class="st">"{character_name} has been expelled from Hogwarts for casting {spell_cast}!"</span>))</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>      modified <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(<span class="fu">glue</span>(<span class="st">"{character_name} cast {spell_cast}, not cool bro."</span>))</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Special case for Avada Kedavra</span></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (spell_cast <span class="sc">==</span> <span class="st">"Avada Kedavra"</span>) {</span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>      characters_conditionals_example_1 <span class="ot">&lt;-</span> characters_conditionals_example_1 <span class="sc">%&gt;%</span></span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">Species =</span> <span class="fu">if_else</span>(</span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>          Character.Name <span class="sc">==</span> spell_cast_to <span class="sc">&amp;</span> Character.Name <span class="sc">!=</span> <span class="st">"Harry Potter"</span>,</span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>          <span class="st">"ghost"</span>,</span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>          Species</span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>        ))</span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (spell_cast_to <span class="sc">==</span> <span class="st">"Harry Potter"</span>) {</span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>        <span class="fu">print</span>(<span class="st">"But Harry Potter survived because he is the boy who lived!"</span>)</span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>        <span class="fu">print</span>(<span class="fu">glue</span>(<span class="st">"{spell_cast_to} has been turned into a ghost by {character_name}!"</span>))</span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>      modified <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (spell_cast <span class="sc">%in%</span> spells<span class="sc">$</span>Incantation) {</span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>    spell_info <span class="ot">&lt;-</span> spells <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Incantation <span class="sc">==</span> spell_cast)</span>
+<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">glue</span>(<span class="st">"Spell: {spell_info$Incantation}, Effect: {spell_info$Effect}"</span>))</span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">"Not a spell, try again."</span>)</span>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Return the modified dataframe if changes were made, otherwise return the original characters dataframe</span></span>
+<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (modified) {</span>
+<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(characters_conditionals_example_1)</span>
+<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(characters)</span>
+<span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-62"><a href="#cb14-62" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ex1_generic <span class="ot">&lt;-</span> <span class="fu">battle_simulator</span>(<span class="st">"Hermione Granger"</span>, <span class="st">"Oculus Reparo"</span>, <span class="st">"Harry Potter"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Spell: Oculus Reparo, Effect: Repairs&nbsp;glasses</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ex2_wl <span class="ot">&lt;-</span> <span class="fu">battle_simulator</span>(<span class="st">"Ron Weasley"</span>, <span class="st">"Wingardium Leviosa"</span>, <span class="st">"Hermione Granger"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "It's leviOsa, not levioSA!"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>ex3_unforgiveable_adult <span class="ot">&lt;-</span> <span class="fu">battle_simulator</span>(<span class="st">"Lucius Malfoy"</span>, <span class="st">"Crucio"</span>, <span class="st">"Dobby"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Lucius Malfoy cast Crucio, not cool bro.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>ex4_unforgiveable_student <span class="ot">&lt;-</span> <span class="fu">battle_simulator</span>(<span class="st">"Draco Malfoy"</span>, <span class="st">"Imperio"</span>, <span class="st">"Neville Longbottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Draco Malfoy has been expelled from Hogwarts for casting Imperio!</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>ex5_ghost <span class="ot">&lt;-</span> <span class="fu">battle_simulator</span>(<span class="st">"Bellatrix Lestrange"</span>, <span class="st">"Avada Kedavra"</span>, <span class="st">"Sirius Black"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bellatrix Lestrange cast Avada Kedavra, not cool bro.
+Sirius Black has been turned into a ghost by Bellatrix Lestrange!</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>ex6_boy_who_lived <span class="ot">&lt;-</span> <span class="fu">battle_simulator</span>(<span class="st">"Voldemort"</span>, <span class="st">"Avada Kedavra"</span>, <span class="st">"Harry Potter"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Voldemort cast Avada Kedavra, not cool bro.
+[1] "But Harry Potter survived because he is the boy who lived!"</code></pre>
+</div>
+</div>
+</section>
+<section id="loops" class="level3">
+<h3 class="anchored" data-anchor-id="loops">Loops</h3>
+<p>I hope you enjoyed casting some spells and testing out some of the variations within the battle_simulator function. Why don’t you customise it, e.g., by stipulating that muggles can’t cast spells? Customising the code of others is a great way to get to grips with it and to optimise it for our individual needs.</p>
+<p>But what if we had a function or set of functions that we wanted to run on an industrial scale? Even those one-liners above would get old fast if we wanted to run e.g., 1000 variations. Looping is one technique that can help here. There are some modern R-specific solutions here to simplify loops [see this article if interested](<a href="https://www.r-bloggers.com/2021/05/apply-family-in-r-apply-lapply-sapply-mapply-and-tapply/" class="uri">https://www.r-bloggers.com/2021/05/apply-family-in-r-apply-lapply-sapply-mapply-and-tapply/</a>). These modern takes reduce code, but I would argue that they do so at the expense of being readable as they grow in complexity - in short the code doesn’t look like how we think about the processes they represent (in my very humble opinion). So my pitch is for good old loops, the most common of which is the for loop, which i’ll demonstrate below.</p>
+<p>The core of the idea is that we have some set of entities, be it a list of string, or set of columns of rows in a dataframe, and we want to go through each iteration of that set and carry out an operation on it. Think “for each iteration of…do x”. The “i” that you will often see is a conventional placeholder. To test this, swap out each i for banana and watch the code still work). With that in mind lets simulate a battle from the Deathly Hallows (more or less) by casting lots of spells at once. To do that we need to store all of our intended steps in something. Here we are creating an object with the intention of looping through its contents, but often you won’t need to do that as your target will already exist.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a readable table of battles using tribble</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>battles <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>caster, <span class="sc">~</span>spell, <span class="sc">~</span>target,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Voldemort"</span>, <span class="st">"Avada Kedavra"</span>, <span class="st">"Mad-Eye Moody"</span>,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Fenrir Greyback"</span>, <span class="st">"Avada Kedavra"</span>, <span class="st">"Remus Lupin"</span>,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Voldemort"</span>, <span class="st">"Avada Kedavra"</span>, <span class="st">"Garrick Ollivander"</span>,</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Molly Weasley"</span>, <span class="st">"Avada Kedavra"</span>, <span class="st">"Bellatrix Lestrange"</span>,</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Voldemort"</span>, <span class="st">"Avada Kedavra"</span>, <span class="st">"Fred Weasley"</span>,</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Voldemort"</span>, <span class="st">"Avada Kedavra"</span>, <span class="st">"Harry Potter"</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(battles)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  caster          spell         target             
+  &lt;chr&gt;           &lt;chr&gt;         &lt;chr&gt;              
+1 Voldemort       Avada Kedavra Mad-Eye Moody      
+2 Fenrir Greyback Avada Kedavra Remus Lupin        
+3 Voldemort       Avada Kedavra Garrick Ollivander 
+4 Molly Weasley   Avada Kedavra Bellatrix Lestrange
+5 Voldemort       Avada Kedavra Fred Weasley       
+6 Voldemort       Avada Kedavra Harry Potter       </code></pre>
+</div>
+</div>
+<p>Spoken translation:</p>
+<p>“<code>My battle_simulator function returns a dataframe, so if I'm going to run it lots at once, I'm going to need something to store them in, so let's create an empty list ahead of time before we begin. Ok let's begin. For every row in the battles dataframe, first create an name for the dataframe the battle_simulator function is about to produce. Then update my empty list with the product of my battle_simuilator function. In order to run the battle_simulator function look to the caster column to get the  character_name argument, the spell column to get the spell_cast argument, and the target column to get the spell_cast_to argument.</code>”</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Loop through battles and store results in a list</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>battle_results <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(battles)) {</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  battle_name <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"battle_"</span>, i)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  battle_results[[battle_name]] <span class="ot">&lt;-</span> <span class="fu">battle_simulator</span>(battles<span class="sc">$</span>caster[i], battles<span class="sc">$</span>spell[i], battles<span class="sc">$</span>target[i])</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Voldemort cast Avada Kedavra, not cool bro.
+Mad-Eye Moody has been turned into a ghost by Voldemort!
+Fenrir Greyback cast Avada Kedavra, not cool bro.
+Remus Lupin has been turned into a ghost by Fenrir Greyback!
+Voldemort cast Avada Kedavra, not cool bro.
+Garrick Ollivander has been turned into a ghost by Voldemort!
+Molly Weasley cast Avada Kedavra, not cool bro.
+Bellatrix Lestrange has been turned into a ghost by Molly Weasley!
+Voldemort cast Avada Kedavra, not cool bro.
+Fred Weasley has been turned into a ghost by Voldemort!
+Voldemort cast Avada Kedavra, not cool bro.
+[1] "But Harry Potter survived because he is the boy who lived!"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(battle_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "battle_1" "battle_2" "battle_3" "battle_4" "battle_5" "battle_6"</code></pre>
+</div>
+</div>
+</section>
+<section id="writing-options" class="level3">
+<h3 class="anchored" data-anchor-id="writing-options">Writing Options</h3>
+<p>All good thing must come to an end, and when we are finished coding, the data often needs to leave R and go somewhere else. A highly common scenario is exporting some data out into a csv file. This is referred to as ‘writing’ the data to a csv. When working in a project, it’s good practice to have sensible subfolders for storing different types of materials. Therefore, I created an output folder to capture anything I might go on to export out of R. Here’s any example of writing the battle dataframe into a csv using write.csv() and here():</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(battles, <span class="at">file =</span> <span class="fu">here</span>(<span class="st">"output"</span>, <span class="st">"battle.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="write-to-excel-workbook" class="level4">
+<h4 class="anchored" data-anchor-id="write-to-excel-workbook">Write to Excel workbook</h4>
+<p>Before we finish I thought I’d share a useful snippet for when you are left with multiple related objects (e.g., chart data for a dashboard or a set of results from the same series of analyses) and you want to write them all to the same Excel workbook with the names of the objects as the sheet names</p>
+<p>Spoken translation:</p>
+<p><code>"Let's create an empty Excel workbook using the openxlsx package that i've already loaded in using library(openxlsx). For each dataframe in the list of dataframes that were created in the for loop example above, add a sheet to the empty Excel workbook with the data from that iteration written to it and with the sheet name being the same as the dataframe for the iteration we are on. Save this workbook to the output folder of this project and call the file battle_results.xlsx".</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new workbook</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>wb <span class="ot">&lt;-</span> <span class="fu">createWorkbook</span>()</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Add each dataframe in battle_results as a separate sheet</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (battle_name <span class="cf">in</span> <span class="fu">names</span>(battle_results)) {</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addWorksheet</span>(wb, <span class="at">sheetName =</span> battle_name)</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeData</span>(wb, <span class="at">sheet =</span> battle_name, <span class="at">x =</span> battle_results[[battle_name]])</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the workbook</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a><span class="fu">saveWorkbook</span>(wb, <span class="fu">here</span>(<span class="st">"output"</span>, <span class="st">"battle_results.xlsx"</span>), <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="recap" class="level2">
+<h2 class="anchored" data-anchor-id="recap">Recap</h2>
+<p><img src="materials/images/celebration.jpg" class="img-fluid" width="600"></p>
+<ul class="task-list">
+<li><p><label><input type="checkbox" checked="">Bigger and bolder ideas require better tools.</label></p></li>
+<li><p><label><input type="checkbox" checked="">Conditional logic, functions and loops unlock a world of efficient, accessible, and reproducible code.</label></p></li>
+<li><p><label><input type="checkbox" checked="">As always, don’t worry about the commas and squiggly lines and take one step at a time.</label></p></li>
+</ul>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,381 @@
+---
+title: "Session 2: Spells"
+author: "Tom Hunter - Data Scientist (City and Guilds)"
+format: 
+  html:
+    theme: default
+    highlight-style: dracula
+editor: visual
+---
+
+## Introduction
+
+Well done on getting through the sorting stage, you should feel settled in now and ready to start learning some tidyverse spells. I also want to hard sell two messages:
+
+1.  Don't scroll down to the bottom of this script and go "No way, this looks really complicated - I'm out!". Instead `trust that it will make sense if I approach it one step at a time`. I have to remind myself of this regularly and it applies just as much on day one as on day one thousand.
+2.  The examples in this script are all you need to get out there and start solving real world problems. `Once you get to the end of this script, you will have built a house with a foundation.` After that, it's only wallpaper, flowerbeds and extensions from then on out.
+
+```{r, message = FALSE}
+# Accio libraries
+library(tidyverse)
+library(here)
+
+# Accio data
+movies <- read.csv(file = here("materials", "data", "movies.csv"))
+characters <- read.csv(file = here("materials", "data", "Characters.csv"))
+quidditch <- read.csv(file = here("materials", "data", "quidditch.csv"))
+quidditch_players <- read.csv(file = here("materials", "data", "quidditch_players.csv"))
+```
+
+## Spells
+
+## ![](materials/images/charms.jpg){width="600"}
+
+OK let's start learning some spells. I have chosen these ones as they are the ones I use almost daily. There are of course many more but you really can just figure out the rest as you go.
+
+`Reminder: we aren't asking our poor brains to remember where all the commas and squiggly lines are.` Instead, we will try and remember, for example, that there exists a function within the tidyverse called `rename`, and trust that if we don't remember where the commas and squiggly lines go, then we can just refresh our memories by looking it up on Google or by asking our favourite AI companion.
+
+The rest of this demonstration will have the following simple structure: 8 categories of spell, and for each example there is also an example of how you might inspect/interrogate your output (Lumos!).
+
+### Spell 1: Rename
+
+Tip: whenever you see this "`|>`" I want you to say "and then" in your head.
+
+One of the great things about the tidyverse is that it is a very spoken way of writing code. Here I read the code below out in my head as:
+
+*`Let's create an object called movies_spell_1. movies_spell_1 is what you get after you to take the movies dataframe and then rename the columns with the periods in the name`*".
+
+Note as well that you could have just called the new object "movies" i.e., overwriting the old one. Don't think that you always have to create a new object every time, I'm just doing it here for demonstrative purposes.
+
+```{r}
+movies_spell_1 <- movies |>
+  rename(
+    "id" = "Movie.ID",
+    "title" = "Movie.Title",
+    "year" = "Release.Year",
+    "box_office" = "Box.Office"
+  )
+
+# Lumos!
+names(movies_spell_1)
+```
+
+While i'm here, it looks a bit funky that some of the names are in small case and some have capitals. Let's use rename again here to fix this (note with much larger data sets you might look for a more dynamic, i.e., less manual way of renaming these):
+
+```{r}
+movies_spell_1 <- movies_spell_1 |>
+  rename(
+    "runtime" = "Runtime",
+    "budget" = "Budget"
+  )
+
+# Lumos!
+names(movies_spell_1)
+```
+
+### Spell 2: Select
+
+Next we have select(). When you think select(), you think `let's get some columns.` I've shown a couple of examples of select() in action down below, but as with all of these spells, there is so much you can do with them, so if you run into a problem in R that is broadly to do with selecting columns, you can be confident that select() will have some role to play in the solution.
+
+Spoken translation:
+
+"*`Let's create a new thing called characters_spell_2_example_1. What characters_spell_2_example_1 is is what you get after you take the characters dataframe and then select only the Character.Name, Gender, and House columns`*".
+
+```{r}
+characters_spell_2_example_1 <- characters |>
+  select(Character.Name, Gender, House)
+
+# Lumos!
+names(characters_spell_2_example_1)
+```
+
+Note that you can get the exact same results by using the column numbers:
+
+```{r}
+characters_spell_2_example_2 <- characters |>
+  select(2, 4:5)
+
+# Lumos!
+names(characters_spell_2_example_2)
+```
+
+Here is an example of using select() with another useful spell (function) inside it. There are lots of things that can be used within `select()`. Here you use starts_with() to select every column that starts with "Wand". Other notable ones include ends_with() and contains().
+
+```{r}
+characters_spell_2_example_3 <- characters |>
+  select(starts_with("Wand"))
+
+# Lumos!
+names(characters_spell_2_example_3)
+```
+
+A final useful thing to point out is that you don't always need to reduce the number of columns when using Select, you can also use it to do a bit of tidying, here by re-ordering the columns.
+
+Spoken translation:
+
+"*`Let's create a new thing called movies_spell_2_example_4. What that thing is is what you get after taking the movies dataframe and then first selecting the Movie.Title column, then the Release.Year column and then just selecting everything else as it was before`*".
+
+```{r}
+movies_spell_2_example_4 <- movies |>
+  select(Movie.Title, Release.Year, everything())
+
+# Lumos!
+names(movies_spell_2_example_4)
+```
+
+### Spell 3: Filter
+
+So far so good? Remember, one step at a time. The next spell in our tidyverse spellbook is Filter(). All you need to remember is that where you have Select for columns, you have Filter for rows.
+
+Spoken translation:
+
+`"Let's create a thing called characters_spell_3_example_1. What that thing is is what you get after taking the characters dataframe and then filtering it to contain only rows in the House column that exactly equal the value "Gryffindor`".
+
+```{r}
+characters_spell_3_example_1 <- characters |>
+  filter(House == "Gryffindor")
+
+# Lumos!
+head(characters_spell_3_example_1 |> select(House))
+```
+
+Spoken translation:
+
+"*`Let's create a thing called characters_spell_3_example_2. That thing is what is created after taking the character dataframe and then filtering the rows so that the only rows left are those where the values in the Gender column are exactly equal to Female and the values in the Wand..Core. column are exactly equal to Dragon Heartstring`* ".
+
+```{r}
+characters_spell_3_example_2 <- characters |>
+  filter(Gender == "Female" & Wand..Core. == "Dragon Heartstring")
+
+# Lumos!
+head(characters_spell_3_example_2 |> select(Gender, Wand..Core.))
+```
+
+For this example coming up, we are going to create a useful object called a vector to help us write our next bit of code that uses filter. Think of this as being similar to creating a helper column in Excel. We know from watching the films that the cool houses are Gryffindor, Hufflepuff, and Ravenclaw, so let's pop them in a vector for storage and call it cool_houses. The benefit of this is that whenever you want to refer to all of these at once, all we need to do is refer to cool_houses (imagine a vector with 500 names in it and you see why it becomes a more and more useful thing at scale).
+
+Spoken translation:
+
+"*`Let's create a thing called cool_houses. What cool_houses is is a vector containing the three names of the cool houses. Now that I have these ready to go, let's create a thing called characters_spell_3_example_3. What characters_spell_3_example_3 is what you get after taking characters and filtering the rows so that only rows in the House column that match the values in cool_houses remain`*".
+
+```{r}
+cool_houses <- c("Gryffindor", "Hufflepuff", "Ravenclaw")
+characters_spell_3_example_3 <- characters |>
+  filter(House %in% cool_houses)
+
+# Lumos!
+unique(characters_spell_3_example_3$House)
+```
+
+We can also use Filter to look for things to exclude (as opposed to looking for things to include above with the cool_houses). Let's follow on with that example and assign the value "Slytherin" to the object uncool_houses. From here we can use Filter with the != ("not equal to") operator.
+
+Spoken translation:
+
+"*`Let's create a thing called uncool_houses. Let's assign the value, a string, Slytherin, to it. With this at our disposal, let's create a thing called characters_spell_3_example_4. characters_spell_3_example_4 is what you get by taking the characters dataframe and filtering so that only rows that don't equal the value assigned to uncool_houses remain`*".
+
+```{r}
+uncool_houses <- "Slytherin"
+characters_spell_3_example_4 <- characters |>
+  filter(House != uncool_houses)
+
+# Lumos!
+unique(characters_spell_3_example_4$House)
+```
+
+### Spell 4: Mutate
+
+When you hear mutate I want you to think about creating a new column in Excel which uses the data from the other columns. In essence, you are just just creating new from old stuff with a formula in between to guide the process along.
+
+Spoken translation:
+
+"*`Let's create a thing called movies_spell_4_example_1, which is what you get after taking the movies dataframe and then creating a new column called profit. Each row in that column is what you get when you subtract the Budget value from the Box.Office value for that row`*".
+
+```{r}
+movies_spell_4_example_1 <- movies |>
+  mutate(profit = Box.Office - Budget)
+
+# Lumos!
+head(movies_spell_4_example_1 |> select(Budget, Box.Office, profit))
+```
+
+#### Mutate with case_when
+
+Similarly to all of the other tidyverse spells, there's a lot of things you can do within mutate(). Just knowing of and remembering that mutate() exists and it creates new columns is half the battle - that's your ticket to finding the resources you need whilst solving problems on the go because you can use it in searches for better results. Here's one very common example though that will come up a fair bit - using mutate() alongside case_when(). Just think of creating a new column in Excel and using an if-else of if-else-if-else etc to fill it.
+
+Spoken translation:
+
+"*`Let's store all of the main characters in vector called main_characters so that I can refer to it easily. Let's then create an object called characters_spell_4_example_2. characters_spell_4_example_2 is what you get by taking the characters dataframe and then creating a new column called main_character_yn. To create main_character_yn, let's go through each row and if that row has a value that's in our main_characters vector, let's fill that row with y. For anything else that could possibly ever come up, let's call that n`*".
+
+```{r}
+main_characters <- c(
+  "Harry Potter", "Ron Weasley", "Hermione Granger",
+  "Albus Dumbledore", "Severus Snape", "Voldemort"
+)
+
+characters_spell_4_example_2 <- characters |>
+  mutate(main_character_yn = case_when(
+    Character.Name %in% main_characters ~ "y",
+    TRUE ~ "n"
+  ))
+
+# Lumos!
+table(characters_spell_4_example_2$main_character_yn)
+```
+
+### Spell 5: Pivot
+
+This will make sense to you if you have used pivot tables in Excel or Google Sheets. All you need to know is:
+
+1.  You can arrange your data long or wide.
+2.  Just like pivot tables in Excel.
+3.  Long format by default is probably the tidiest, but you don't need to think about this much unless the problem dictates it. A common example is data visualisation packages or tools needing the data to be in a specific format to work.
+
+#### Pivot_longer
+
+Spoken translation:
+
+"*`Let's create a new object called quidditch_spell_5_example_1. This new object is what you get after taking the quidditch dataframe and then converting the four house columns from wide format to long format. Let's present the information on which house the points refer to in a column called house, and let's pop all of the values, i.e., quidditch points scored into a column called points`*".
+
+```{r}
+quidditch_spell_5_example_1 <- quidditch |>
+  pivot_longer(
+    cols = gryffindor:slytherin,
+    names_to = "house",
+    values_to = "points"
+  )
+
+# Lumos!
+head(quidditch_spell_5_example_1, n = 10)
+```
+
+#### Pivot_wider
+
+Spoken translation:
+
+"*`Let's create an object called quidditch_spell_5_example_2. This new object quidditch_spell_5_example_2 is what you get after you take quidditch_spell_5_example_1 and then pivot the house column wider. This means that all of the unique values in that column, the four houses, will have their own column. The values in that column will come from the points column`*".
+
+```{r}
+quidditch_spell_5_example_2 <- quidditch_spell_5_example_1 |>
+  pivot_wider(names_from = house, values_from = points)
+
+# Lumos!
+head(quidditch_spell_5_example_2, n = 10)
+```
+
+### Spell 6: Join
+
+If you have worked with databases before you will know the principle of joining very well. If you have used VLOOKUP and its many off-shots in Excel you will also have a good idea. We use joins when you have two sources of data and we want to use the content of one to expand upon the other. This usually means having one smaller lookup table and one larger main data set. In the example below we have two sources of data.
+
+1.  quidditch_players: a small list of characters and a yn indicator of whether or not they are quidditch players or not.
+2.  characters: a much larger data set with information on all of the characters.
+
+Wouldn't it be cool if we could make our character dataframe even more informative by also including whether or not a given character is a quidditch player? Well all we need to do that is some common source of information between the two data sources and we are ready to rock!
+
+Since both sources of data contain the character names in a column we can use this information to join them together. It's worth noting that there are several different types of joins that exist, but I almost never use them. For some reason I almost always use left joins, as in the example below.
+
+Here's the lookup table:
+
+```{r}
+# Lumos!
+head(quidditch_players)
+```
+
+And here's the left join. Spoken translation:
+
+"*`Let's create an object called characters_spell_6_example_1. This new object is what you get after you take the characters dataframe and join the quidditch_players dataframe to it. This in practice means creating a new column in the characters dataframe called quidditch_player as that is the only other column in the lookup table. As such, use the Character.Name column to join them as they both have this in common, and wherever a row in the Character.Name column in the characters dataframe matches a row in the quidditch_players lookup, fill the value in the quidditch_player column with whatever is in the lookup table. If there isn't a match, just return NA`*".
+
+```{r}
+characters_spell_6_example_1 <- characters |>
+  left_join(quidditch_players, by = "Character.Name")
+
+# Lumos!
+head(characters_spell_6_example_1 |>
+  select(Character.Name, quidditch_player) |>
+  filter(!is.na(quidditch_player)), n = 10)
+```
+
+### Spell 7: Piping
+
+Just like Dumbledore in the Deathly Hallows Part Two, I've been with-holding information from you all along (I'm sorry if these metaphors are too much but i'm really enjoying them). What I've been holding back is that sword of Gryffindor reveals itself not to anyone who needs it, but instead to anyone that presses "`shift + \ + >`". This shortcut reveals the sword of Gryffindor, otherwise known as the native R pipe `|>.` Remember I asked you to say "and then" in your head every time you seen it? Well you were subconsciously training yourself to call the sword all along. You can call on the sword to chain together as many other tidyverse spells as you want in one bit of code, unlocking the true power of the tidyverse.
+
+Spoken translation:
+
+"*`Let's create an object called characters_spell_7_example_1. This new object is what is created when you take the characters dataframe AND THEN filter the rows so that no rows where Species is Human or Species is a blank cell remain AND THEN create a new column called character_morals. To fill the rows of character_morals, go row-by-row and if the value for Character.Name is one of Kreacher, Fenrir Greyback, or Bogrod, then fill the value is 'baddie'. IF the value for Character.Name is one of Griphook, Aragog, or Bane, then the value is 'its_complicated'. For everything and anything else that could possibly come up, then the value is 'goodie'....AND THEN keep only columns in my new object that contain the string "character", irrespective or case`*".
+
+```{r}
+characters_spell_7_example_1 <- characters |> # AND THEN
+  filter(Species != "Human" & Species != "") |> # AND THEN
+  mutate(character_morals = case_when(
+    Character.Name %in% c("Kreacher", "Fenrir Greyback", "Bogrod") ~ "baddie",
+    Character.Name %in% c("Griphook", "Aragog", "Bane") ~ "its_complicated",
+    TRUE ~ "goodie"
+  )) |> # AND THEN
+  select(contains("character"))
+
+# Lumos!
+head(characters_spell_7_example_1, n = 10)
+```
+
+### Spell 8: Summarise
+
+Almost there! Imagine you are in an Excel workbook and you are wanting to generate descriptive statistics, means, medians, percentages, counts, and so on and so forth. In the tidyverse, you can do all of that under the summarise() umbrella. This is useful in two ways:
+
+1.  It fits nicely in with all your other tidyverse code.
+2.  It gives you an anchor to start any Googling or prompting you need to do to find whatever variation you need for a given problem.
+
+Spoken translation:
+
+"*`Let's create an object called movies_spell_8_example_1. This new object is what you get after taking the movies dataframe and calculating the mean and the median of the Box.Office column. When calculating these, if any NAs pop up, let's just ignore them`*".
+
+```{r}
+movies_spell_8_example_1 <- movies |>
+  summarise(
+    mean_box_office = mean(Box.Office, na.rm = TRUE),
+    median_box_office = median(Box.Office, na.rm = TRUE)
+  )
+
+# Lumos!
+print(movies_spell_8_example_1)
+```
+
+I'm adding this one just to show that you can do lots of funky stuff within summarise(), to hammer home that you routinely start off with summarise() and then have a bit of faith that the solution will more often that not exist within it.
+
+Spoken translation:
+
+"*`Let's create an object called movies_spell_8_example_2. This is what you get after taking the movies dataframe and then calculating the percentage of films that meet the definition of being long (i.e., has  Runtime greater than 140 minutes). In order to calculate that let's create a vector of values, one for every row in Runtime, with a 1 being assigned to the row if Runtime > 140 and a 0 if not. After that, let's average the 1 and 0s in this vector and ignore any NAs as we go. And finally, let's multiply this by 100 so as to make it a percentage`*".
+
+```{r}
+movies_spell_8_example_2 <- movies |>
+  # Let's call a "long" film one that is over 140 mins
+  summarise(percentage_long = mean(Runtime > 140, na.rm = TRUE) * 100)
+
+# Lumos!
+print(movies_spell_8_example_2)
+```
+
+A very common function to use alongside summarise is `group_by.` Here we get to point all of that work that summarise does for us to any number of groups that we specify in the group_by() expression. I've also added a couple of extra lines at the end to tidy up the results.
+
+Spoken translation:
+
+"*`Let's create an object called quidditch_spell_8_example_3. This new object is what you get when you take the quidditch dataframe AND THEN create a new column called total_score. total_score is filled by adding the points for all four houses for a given row...AND THEN we are going to get ready for averaging by first grouping our data by Movie.ID so that we can get an average of each...AND THEN let's go ahead and find the mean total score for each film, ignoring any NAs as we go along....AND THEN after we have our results let's round the values in any numeric column we come across to 0 decimal places AND THEN let's finish up by sorting these values from largest to smallest so that we can easily see which films have the highest average quidditch scores`*".
+
+```{r}
+quidditch_spell_8_example_3 <- quidditch |>
+  mutate(total_score = gryffindor + hufflepuff + ravenclaw + slytherin) |>
+  group_by(Movie.ID) |>
+  summarise(mean_total_score = mean(total_score, na.rm = TRUE)) |>
+  mutate_if(is.numeric, round, 0) |>
+  arrange(desc(mean_total_score))
+
+# Lumos!
+print(quidditch_spell_8_example_3)
+```
+
+### Recap
+
+![](materials/images/celebration.jpg){width="600"}
+
+-   [x] A forest is too big to worry about, let's focus on the tree in front of us instead.
+
+-   [x] Let's not become fixated on commas and squiggly lines, let's instead learn the tidyverse framework and use this knowledge to find the resources we need when we need them.
+
+-   [x] The first two sessions have everything they need in them to start solving real problems in R.

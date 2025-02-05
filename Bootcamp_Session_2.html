@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Tom Hunter - Data Scientist (City and Guilds)">
+
+<title>Session 2: Spells</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Bootcamp_Session_2_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Bootcamp_Session_2_files/libs/quarto-html/quarto.js"></script>
+<script src="Bootcamp_Session_2_files/libs/quarto-html/popper.min.js"></script>
+<script src="Bootcamp_Session_2_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Bootcamp_Session_2_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Bootcamp_Session_2_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Bootcamp_Session_2_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Bootcamp_Session_2_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Bootcamp_Session_2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Bootcamp_Session_2_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Session 2: Spells</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Tom Hunter - Data Scientist (City and Guilds) </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Well done on getting through the sorting stage, you should feel settled in now and ready to start learning some tidyverse spells. I also want to hard sell two messages:</p>
+<ol type="1">
+<li>Don’t scroll down to the bottom of this script and go “No way, this looks really complicated - I’m out!”. Instead <code>trust that it will make sense if I approach it one step at a time</code>. I have to remind myself of this regularly and it applies just as much on day one as on day one thousand.</li>
+<li>The examples in this script are all you need to get out there and start solving real world problems. <code>Once you get to the end of this script, you will have built a house with a foundation.</code> After that, it’s only wallpaper, flowerbeds and extensions from then on out.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Accio libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Accio data</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>movies <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">file =</span> <span class="fu">here</span>(<span class="st">"materials"</span>, <span class="st">"data"</span>, <span class="st">"movies.csv"</span>))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>characters <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">file =</span> <span class="fu">here</span>(<span class="st">"materials"</span>, <span class="st">"data"</span>, <span class="st">"Characters.csv"</span>))</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>quidditch <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">file =</span> <span class="fu">here</span>(<span class="st">"materials"</span>, <span class="st">"data"</span>, <span class="st">"quidditch.csv"</span>))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>quidditch_players <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">file =</span> <span class="fu">here</span>(<span class="st">"materials"</span>, <span class="st">"data"</span>, <span class="st">"quidditch_players.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="spells" class="level2">
+<h2 class="anchored" data-anchor-id="spells">Spells</h2>
+</section>
+<section id="section" class="level2">
+<h2 class="anchored" data-anchor-id="section"><img src="materials/images/charms.jpg" class="img-fluid" width="600"></h2>
+<p>OK let’s start learning some spells. I have chosen these ones as they are the ones I use almost daily. There are of course many more but you really can just figure out the rest as you go.</p>
+<p><code>Reminder: we aren't asking our poor brains to remember where all the commas and squiggly lines are.</code> Instead, we will try and remember, for example, that there exists a function within the tidyverse called <code>rename</code>, and trust that if we don’t remember where the commas and squiggly lines go, then we can just refresh our memories by looking it up on Google or by asking our favourite AI companion.</p>
+<p>The rest of this demonstration will have the following simple structure: 8 categories of spell, and for each example there is also an example of how you might inspect/interrogate your output (Lumos!).</p>
+<section id="spell-1-rename" class="level3">
+<h3 class="anchored" data-anchor-id="spell-1-rename">Spell 1: Rename</h3>
+<p>Tip: whenever you see this “<code>|&gt;</code>” I want you to say “and then” in your head.</p>
+<p>One of the great things about the tidyverse is that it is a very spoken way of writing code. Here I read the code below out in my head as:</p>
+<p><em><code>Let's create an object called movies_spell_1. movies_spell_1 is what you get after you to take the movies dataframe and then rename the columns with the periods in the name</code></em>”.</p>
+<p>Note as well that you could have just called the new object “movies” i.e., overwriting the old one. Don’t think that you always have to create a new object every time, I’m just doing it here for demonstrative purposes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>movies_spell_1 <span class="ot">&lt;-</span> movies <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"id"</span> <span class="ot">=</span> <span class="st">"Movie.ID"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"title"</span> <span class="ot">=</span> <span class="st">"Movie.Title"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"year"</span> <span class="ot">=</span> <span class="st">"Release.Year"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"box_office"</span> <span class="ot">=</span> <span class="st">"Box.Office"</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(movies_spell_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "id"         "title"      "year"       "Runtime"    "Budget"    
+[6] "box_office"</code></pre>
+</div>
+</div>
+<p>While i’m here, it looks a bit funky that some of the names are in small case and some have capitals. Let’s use rename again here to fix this (note with much larger data sets you might look for a more dynamic, i.e., less manual way of renaming these):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>movies_spell_1 <span class="ot">&lt;-</span> movies_spell_1 <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"runtime"</span> <span class="ot">=</span> <span class="st">"Runtime"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"budget"</span> <span class="ot">=</span> <span class="st">"Budget"</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(movies_spell_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "id"         "title"      "year"       "runtime"    "budget"    
+[6] "box_office"</code></pre>
+</div>
+</div>
+</section>
+<section id="spell-2-select" class="level3">
+<h3 class="anchored" data-anchor-id="spell-2-select">Spell 2: Select</h3>
+<p>Next we have select(). When you think select(), you think <code>let's get some columns.</code> I’ve shown a couple of examples of select() in action down below, but as with all of these spells, there is so much you can do with them, so if you run into a problem in R that is broadly to do with selecting columns, you can be confident that select() will have some role to play in the solution.</p>
+<p>Spoken translation:</p>
+<p>“<em><code>Let's create a new thing called characters_spell_2_example_1. What characters_spell_2_example_1 is is what you get after you take the characters dataframe and then select only the Character.Name, Gender, and House columns</code></em>”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>characters_spell_2_example_1 <span class="ot">&lt;-</span> characters <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Character.Name, Gender, House)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(characters_spell_2_example_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Character.Name" "Gender"         "House"         </code></pre>
+</div>
+</div>
+<p>Note that you can get the exact same results by using the column numbers:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>characters_spell_2_example_2 <span class="ot">&lt;-</span> characters <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">2</span>, <span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(characters_spell_2_example_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Character.Name" "Gender"         "House"         </code></pre>
+</div>
+</div>
+<p>Here is an example of using select() with another useful spell (function) inside it. There are lots of things that can be used within <code>select()</code>. Here you use starts_with() to select every column that starts with “Wand”. Other notable ones include ends_with() and contains().</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>characters_spell_2_example_3 <span class="ot">&lt;-</span> characters <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"Wand"</span>))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(characters_spell_2_example_3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Wand..Wood." "Wand..Core."</code></pre>
+</div>
+</div>
+<p>A final useful thing to point out is that you don’t always need to reduce the number of columns when using Select, you can also use it to do a bit of tidying, here by re-ordering the columns.</p>
+<p>Spoken translation:</p>
+<p>“<em><code>Let's create a new thing called movies_spell_2_example_4. What that thing is is what you get after taking the movies dataframe and then first selecting the Movie.Title column, then the Release.Year column and then just selecting everything else as it was before</code></em>”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>movies_spell_2_example_4 <span class="ot">&lt;-</span> movies <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Movie.Title, Release.Year, <span class="fu">everything</span>())</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(movies_spell_2_example_4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Movie.Title"  "Release.Year" "Movie.ID"     "Runtime"      "Budget"      
+[6] "Box.Office"  </code></pre>
+</div>
+</div>
+</section>
+<section id="spell-3-filter" class="level3">
+<h3 class="anchored" data-anchor-id="spell-3-filter">Spell 3: Filter</h3>
+<p>So far so good? Remember, one step at a time. The next spell in our tidyverse spellbook is Filter(). All you need to remember is that where you have Select for columns, you have Filter for rows.</p>
+<p>Spoken translation:</p>
+<p><code>"Let's create a thing called characters_spell_3_example_1. What that thing is is what you get after taking the characters dataframe and then filtering it to contain only rows in the House column that exactly equal the value "Gryffindor</code>“.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>characters_spell_3_example_1 <span class="ot">&lt;-</span> characters <span class="sc">|&gt;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(House <span class="sc">==</span> <span class="st">"Gryffindor"</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(characters_spell_3_example_1 <span class="sc">|&gt;</span> <span class="fu">select</span>(House))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       House
+1 Gryffindor
+2 Gryffindor
+3 Gryffindor
+4 Gryffindor
+5 Gryffindor
+6 Gryffindor</code></pre>
+</div>
+</div>
+<p>Spoken translation:</p>
+<p>“<em><code>Let's create a thing called characters_spell_3_example_2. That thing is what is created after taking the character dataframe and then filtering the rows so that the only rows left are those where the values in the Gender column are exactly equal to Female and the values in the Wand..Core. column are exactly equal to Dragon Heartstring</code></em>”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>characters_spell_3_example_2 <span class="ot">&lt;-</span> characters <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Gender <span class="sc">==</span> <span class="st">"Female"</span> <span class="sc">&amp;</span> Wand..Core. <span class="sc">==</span> <span class="st">"Dragon Heartstring"</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(characters_spell_3_example_2 <span class="sc">|&gt;</span> <span class="fu">select</span>(Gender, Wand..Core.))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Gender        Wand..Core.
+1 Female Dragon Heartstring
+2 Female Dragon Heartstring
+3 Female Dragon Heartstring
+4 Female Dragon Heartstring</code></pre>
+</div>
+</div>
+<p>For this example coming up, we are going to create a useful object called a vector to help us write our next bit of code that uses filter. Think of this as being similar to creating a helper column in Excel. We know from watching the films that the cool houses are Gryffindor, Hufflepuff, and Ravenclaw, so let’s pop them in a vector for storage and call it cool_houses. The benefit of this is that whenever you want to refer to all of these at once, all we need to do is refer to cool_houses (imagine a vector with 500 names in it and you see why it becomes a more and more useful thing at scale).</p>
+<p>Spoken translation:</p>
+<p>“<em><code>Let's create a thing called cool_houses. What cool_houses is is a vector containing the three names of the cool houses. Now that I have these ready to go, let's create a thing called characters_spell_3_example_3. What characters_spell_3_example_3 is what you get after taking characters and filtering the rows so that only rows in the House column that match the values in cool_houses remain</code></em>”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>cool_houses <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Gryffindor"</span>, <span class="st">"Hufflepuff"</span>, <span class="st">"Ravenclaw"</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>characters_spell_3_example_3 <span class="ot">&lt;-</span> characters <span class="sc">|&gt;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(House <span class="sc">%in%</span> cool_houses)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(characters_spell_3_example_3<span class="sc">$</span>House)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Gryffindor" "Ravenclaw"  "Hufflepuff"</code></pre>
+</div>
+</div>
+<p>We can also use Filter to look for things to exclude (as opposed to looking for things to include above with the cool_houses). Let’s follow on with that example and assign the value “Slytherin” to the object uncool_houses. From here we can use Filter with the != (“not equal to”) operator.</p>
+<p>Spoken translation:</p>
+<p>“<em><code>Let's create a thing called uncool_houses. Let's assign the value, a string, Slytherin, to it. With this at our disposal, let's create a thing called characters_spell_3_example_4. characters_spell_3_example_4 is what you get by taking the characters dataframe and filtering so that only rows that don't equal the value assigned to uncool_houses remain</code></em>”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>uncool_houses <span class="ot">&lt;-</span> <span class="st">"Slytherin"</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>characters_spell_3_example_4 <span class="ot">&lt;-</span> characters <span class="sc">|&gt;</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(House <span class="sc">!=</span> uncool_houses)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(characters_spell_3_example_4<span class="sc">$</span>House)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Gryffindor"                   ""                            
+[3] "Ravenclaw"                    "Hufflepuff"                  
+[5] "Beauxbatons Academy of Magic" "Durmstrang Institute"        </code></pre>
+</div>
+</div>
+</section>
+<section id="spell-4-mutate" class="level3">
+<h3 class="anchored" data-anchor-id="spell-4-mutate">Spell 4: Mutate</h3>
+<p>When you hear mutate I want you to think about creating a new column in Excel which uses the data from the other columns. In essence, you are just just creating new from old stuff with a formula in between to guide the process along.</p>
+<p>Spoken translation:</p>
+<p>“<em><code>Let's create a thing called movies_spell_4_example_1, which is what you get after taking the movies dataframe and then creating a new column called profit. Each row in that column is what you get when you subtract the Budget value from the Box.Office value for that row</code></em>”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>movies_spell_4_example_1 <span class="ot">&lt;-</span> movies <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">profit =</span> Box.Office <span class="sc">-</span> Budget)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(movies_spell_4_example_1 <span class="sc">|&gt;</span> <span class="fu">select</span>(Budget, Box.Office, profit))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Budget Box.Office    profit
+1 125000000 1002000000 877000000
+2 100000000  880300000 780300000
+3 130000000  796700000 666700000
+4 150000000  896400000 746400000
+5 150000000  942000000 792000000
+6 250000000  943200000 693200000</code></pre>
+</div>
+</div>
+<section id="mutate-with-case_when" class="level4">
+<h4 class="anchored" data-anchor-id="mutate-with-case_when">Mutate with case_when</h4>
+<p>Similarly to all of the other tidyverse spells, there’s a lot of things you can do within mutate(). Just knowing of and remembering that mutate() exists and it creates new columns is half the battle - that’s your ticket to finding the resources you need whilst solving problems on the go because you can use it in searches for better results. Here’s one very common example though that will come up a fair bit - using mutate() alongside case_when(). Just think of creating a new column in Excel and using an if-else of if-else-if-else etc to fill it.</p>
+<p>Spoken translation:</p>
+<p>“<em><code>Let's store all of the main characters in vector called main_characters so that I can refer to it easily. Let's then create an object called characters_spell_4_example_2. characters_spell_4_example_2 is what you get by taking the characters dataframe and then creating a new column called main_character_yn. To create main_character_yn, let's go through each row and if that row has a value that's in our main_characters vector, let's fill that row with y. For anything else that could possibly ever come up, let's call that n</code></em>”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>main_characters <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Harry Potter"</span>, <span class="st">"Ron Weasley"</span>, <span class="st">"Hermione Granger"</span>,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Albus Dumbledore"</span>, <span class="st">"Severus Snape"</span>, <span class="st">"Voldemort"</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>characters_spell_4_example_2 <span class="ot">&lt;-</span> characters <span class="sc">|&gt;</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">main_character_yn =</span> <span class="fu">case_when</span>(</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    Character.Name <span class="sc">%in%</span> main_characters <span class="sc">~</span> <span class="st">"y"</span>,</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"n"</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(characters_spell_4_example_2<span class="sc">$</span>main_character_yn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  n   y 
+160   6 </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="spell-5-pivot" class="level3">
+<h3 class="anchored" data-anchor-id="spell-5-pivot">Spell 5: Pivot</h3>
+<p>This will make sense to you if you have used pivot tables in Excel or Google Sheets. All you need to know is:</p>
+<ol type="1">
+<li>You can arrange your data long or wide.</li>
+<li>Just like pivot tables in Excel.</li>
+<li>Long format by default is probably the tidiest, but you don’t need to think about this much unless the problem dictates it. A common example is data visualisation packages or tools needing the data to be in a specific format to work.</li>
+</ol>
+<section id="pivot_longer" class="level4">
+<h4 class="anchored" data-anchor-id="pivot_longer">Pivot_longer</h4>
+<p>Spoken translation:</p>
+<p>“<em><code>Let's create a new object called quidditch_spell_5_example_1. This new object is what you get after taking the quidditch dataframe and then converting the four house columns from wide format to long format. Let's present the information on which house the points refer to in a column called house, and let's pop all of the values, i.e., quidditch points scored into a column called points</code></em>”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>quidditch_spell_5_example_1 <span class="ot">&lt;-</span> quidditch <span class="sc">|&gt;</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> gryffindor<span class="sc">:</span>slytherin,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"house"</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"points"</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(quidditch_spell_5_example_1, <span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 6
+      id Movie.ID month top_scorer     house      points
+   &lt;int&gt;    &lt;int&gt; &lt;chr&gt; &lt;chr&gt;          &lt;chr&gt;       &lt;int&gt;
+ 1     1        1 jan   Harry Potter   gryffindor    100
+ 2     1        1 jan   Harry Potter   hufflepuff     70
+ 3     1        1 jan   Harry Potter   ravenclaw     100
+ 4     1        1 jan   Harry Potter   slytherin      20
+ 5     2        1 feb   Cedric Diggory gryffindor    100
+ 6     2        1 feb   Cedric Diggory hufflepuff    100
+ 7     2        1 feb   Cedric Diggory ravenclaw     120
+ 8     2        1 feb   Cedric Diggory slytherin      60
+ 9     3        1 mar   Oliver Wood    gryffindor    100
+10     3        1 mar   Oliver Wood    hufflepuff     20</code></pre>
+</div>
+</div>
+</section>
+<section id="pivot_wider" class="level4">
+<h4 class="anchored" data-anchor-id="pivot_wider">Pivot_wider</h4>
+<p>Spoken translation:</p>
+<p>“<em><code>Let's create an object called quidditch_spell_5_example_2. This new object quidditch_spell_5_example_2 is what you get after you take quidditch_spell_5_example_1 and then pivot the house column wider. This means that all of the unique values in that column, the four houses, will have their own column. The values in that column will come from the points column</code></em>”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>quidditch_spell_5_example_2 <span class="ot">&lt;-</span> quidditch_spell_5_example_1 <span class="sc">|&gt;</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> house, <span class="at">values_from =</span> points)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(quidditch_spell_5_example_2, <span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 8
+      id Movie.ID month top_scorer     gryffindor hufflepuff ravenclaw slytherin
+   &lt;int&gt;    &lt;int&gt; &lt;chr&gt; &lt;chr&gt;               &lt;int&gt;      &lt;int&gt;     &lt;int&gt;     &lt;int&gt;
+ 1     1        1 jan   Harry Potter          100         70       100        20
+ 2     2        1 feb   Cedric Diggory        100        100       120        60
+ 3     3        1 mar   Oliver Wood           100         20       110       120
+ 4     4        1 apr   Walburga Black         60         40       140        60
+ 5     5        1 may   Oliver Wood            90        130        50        60
+ 6     6        1 jun   Seamus Finnig…          0        150        20        60
+ 7     7        1 jul   Draco Malfoy          120         30       100        70
+ 8     8        1 aug   Fred Weasley           90        140        90        90
+ 9     9        1 sep   Oliver Wood            80         20        10       110
+10    10        1 oct   Pomona Sprout          50         20       130        80</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="spell-6-join" class="level3">
+<h3 class="anchored" data-anchor-id="spell-6-join">Spell 6: Join</h3>
+<p>If you have worked with databases before you will know the principle of joining very well. If you have used VLOOKUP and its many off-shots in Excel you will also have a good idea. We use joins when you have two sources of data and we want to use the content of one to expand upon the other. This usually means having one smaller lookup table and one larger main data set. In the example below we have two sources of data.</p>
+<ol type="1">
+<li>quidditch_players: a small list of characters and a yn indicator of whether or not they are quidditch players or not.</li>
+<li>characters: a much larger data set with information on all of the characters.</li>
+</ol>
+<p>Wouldn’t it be cool if we could make our character dataframe even more informative by also including whether or not a given character is a quidditch player? Well all we need to do that is some common source of information between the two data sources and we are ready to rock!</p>
+<p>Since both sources of data contain the character names in a column we can use this information to join them together. It’s worth noting that there are several different types of joins that exist, but I almost never use them. For some reason I almost always use left joins, as in the example below.</p>
+<p>Here’s the lookup table:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(quidditch_players)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Character.Name quidditch_player
+1     Harry Potter                y
+2   Cedric Diggory                y
+3 Hermoine Granger                n
+4      Oliver Wood                y
+5    Percy Weasley                n
+6   Walburga Black                n</code></pre>
+</div>
+</div>
+<p>And here’s the left join. Spoken translation:</p>
+<p>“<em><code>Let's create an object called characters_spell_6_example_1. This new object is what you get after you take the characters dataframe and join the quidditch_players dataframe to it. This in practice means creating a new column in the characters dataframe called quidditch_player as that is the only other column in the lookup table. As such, use the Character.Name column to join them as they both have this in common, and wherever a row in the Character.Name column in the characters dataframe matches a row in the quidditch_players lookup, fill the value in the quidditch_player column with whatever is in the lookup table. If there isn't a match, just return NA</code></em>”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>characters_spell_6_example_1 <span class="ot">&lt;-</span> characters <span class="sc">|&gt;</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(quidditch_players, <span class="at">by =</span> <span class="st">"Character.Name"</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(characters_spell_6_example_1 <span class="sc">|&gt;</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Character.Name, quidditch_player) <span class="sc">|&gt;</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(quidditch_player)), <span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Character.Name quidditch_player
+1     Harry Potter                y
+2     Draco Malfoy                y
+3     Fred Weasley                y
+4    Ginny Weasley                y
+5    Luna Lovegood                n
+6  Seamus Finnigan                y
+7   Cedric Diggory                y
+8    Percy Weasley                n
+9      Oliver Wood                y
+10  Lavender Brown                y</code></pre>
+</div>
+</div>
+</section>
+<section id="spell-7-piping" class="level3">
+<h3 class="anchored" data-anchor-id="spell-7-piping">Spell 7: Piping</h3>
+<p>Just like Dumbledore in the Deathly Hallows Part Two, I’ve been with-holding information from you all along (I’m sorry if these metaphors are too much but i’m really enjoying them). What I’ve been holding back is that sword of Gryffindor reveals itself not to anyone who needs it, but instead to anyone that presses “<code>shift + \ + &gt;</code>”. This shortcut reveals the sword of Gryffindor, otherwise known as the native R pipe <code>|&gt;.</code> Remember I asked you to say “and then” in your head every time you seen it? Well you were subconsciously training yourself to call the sword all along. You can call on the sword to chain together as many other tidyverse spells as you want in one bit of code, unlocking the true power of the tidyverse.</p>
+<p>Spoken translation:</p>
+<p>“<em><code>Let's create an object called characters_spell_7_example_1. This new object is what is created when you take the characters dataframe AND THEN filter the rows so that no rows where Species is Human or Species is a blank cell remain AND THEN create a new column called character_morals. To fill the rows of character_morals, go row-by-row and if the value for Character.Name is one of Kreacher, Fenrir Greyback, or Bogrod, then fill the value is 'baddie'. IF the value for Character.Name is one of Griphook, Aragog, or Bane, then the value is 'its_complicated'. For everything and anything else that could possibly come up, then the value is 'goodie'....AND THEN keep only columns in my new object that contain the string "character", irrespective or case</code></em>”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>characters_spell_7_example_1 <span class="ot">&lt;-</span> characters <span class="sc">|&gt;</span> <span class="co"># AND THEN</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Species <span class="sc">!=</span> <span class="st">"Human"</span> <span class="sc">&amp;</span> Species <span class="sc">!=</span> <span class="st">""</span>) <span class="sc">|&gt;</span> <span class="co"># AND THEN</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">character_morals =</span> <span class="fu">case_when</span>(</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    Character.Name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Kreacher"</span>, <span class="st">"Fenrir Greyback"</span>, <span class="st">"Bogrod"</span>) <span class="sc">~</span> <span class="st">"baddie"</span>,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    Character.Name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Griphook"</span>, <span class="st">"Aragog"</span>, <span class="st">"Bane"</span>) <span class="sc">~</span> <span class="st">"its_complicated"</span>,</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"goodie"</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">|&gt;</span> <span class="co"># AND THEN</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">contains</span>(<span class="st">"character"</span>))</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(characters_spell_7_example_1, <span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Character.ID       Character.Name character_morals
+1             5        Rubeus Hagrid           goodie
+2            11          Remus Lupin           goodie
+3            27                Dobby           goodie
+4            30             Griphook  its_complicated
+5            39       Moaning Myrtle           goodie
+6            47 Nearly Headless Nick           goodie
+7            48             Kreacher           baddie
+8            54     Helena Ravenclaw           goodie
+9            59      Filius Flitwick           goodie
+10           64               Bogrod           baddie</code></pre>
+</div>
+</div>
+</section>
+<section id="spell-8-summarise" class="level3">
+<h3 class="anchored" data-anchor-id="spell-8-summarise">Spell 8: Summarise</h3>
+<p>Almost there! Imagine you are in an Excel workbook and you are wanting to generate descriptive statistics, means, medians, percentages, counts, and so on and so forth. In the tidyverse, you can do all of that under the summarise() umbrella. This is useful in two ways:</p>
+<ol type="1">
+<li>It fits nicely in with all your other tidyverse code.</li>
+<li>It gives you an anchor to start any Googling or prompting you need to do to find whatever variation you need for a given problem.</li>
+</ol>
+<p>Spoken translation:</p>
+<p>“<em><code>Let's create an object called movies_spell_8_example_1. This new object is what you get after taking the movies dataframe and calculating the mean and the median of the Box.Office column. When calculating these, if any NAs pop up, let's just ignore them</code></em>”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>movies_spell_8_example_1 <span class="ot">&lt;-</span> movies <span class="sc">|&gt;</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_box_office =</span> <span class="fu">mean</span>(Box.Office, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_box_office =</span> <span class="fu">median</span>(Box.Office, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(movies_spell_8_example_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  mean_box_office median_box_office
+1       972437500         942600000</code></pre>
+</div>
+</div>
+<p>I’m adding this one just to show that you can do lots of funky stuff within summarise(), to hammer home that you routinely start off with summarise() and then have a bit of faith that the solution will more often that not exist within it.</p>
+<p>Spoken translation:</p>
+<p>“<em><code>Let's create an object called movies_spell_8_example_2. This is what you get after taking the movies dataframe and then calculating the percentage of films that meet the definition of being long (i.e., has  Runtime greater than 140 minutes). In order to calculate that let's create a vector of values, one for every row in Runtime, with a 1 being assigned to the row if Runtime &gt; 140 and a 0 if not. After that, let's average the 1 and 0s in this vector and ignore any NAs as we go. And finally, let's multiply this by 100 so as to make it a percentage</code></em>”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>movies_spell_8_example_2 <span class="ot">&lt;-</span> movies <span class="sc">|&gt;</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Let's call a "long" film one that is over 140 mins</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">percentage_long =</span> <span class="fu">mean</span>(Runtime <span class="sc">&gt;</span> <span class="dv">140</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> <span class="dv">100</span>)</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(movies_spell_8_example_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  percentage_long
+1              75</code></pre>
+</div>
+</div>
+<p>A very common function to use alongside summarise is <code>group_by.</code> Here we get to point all of that work that summarise does for us to any number of groups that we specify in the group_by() expression. I’ve also added a couple of extra lines at the end to tidy up the results.</p>
+<p>Spoken translation:</p>
+<p>“<em><code>Let's create an object called quidditch_spell_8_example_3. This new object is what you get when you take the quidditch dataframe AND THEN create a new column called total_score. total_score is filled by adding the points for all four houses for a given row...AND THEN we are going to get ready for averaging by first grouping our data by Movie.ID so that we can get an average of each...AND THEN let's go ahead and find the mean total score for each film, ignoring any NAs as we go along....AND THEN after we have our results let's round the values in any numeric column we come across to 0 decimal places AND THEN let's finish up by sorting these values from largest to smallest so that we can easily see which films have the highest average quidditch scores</code></em>”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>quidditch_spell_8_example_3 <span class="ot">&lt;-</span> quidditch <span class="sc">|&gt;</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total_score =</span> gryffindor <span class="sc">+</span> hufflepuff <span class="sc">+</span> ravenclaw <span class="sc">+</span> slytherin) <span class="sc">|&gt;</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Movie.ID) <span class="sc">|&gt;</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_total_score =</span> <span class="fu">mean</span>(total_score, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.numeric, round, <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(mean_total_score))</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Lumos!</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(quidditch_spell_8_example_3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 2
+  Movie.ID mean_total_score
+     &lt;dbl&gt;            &lt;dbl&gt;
+1        2              342
+2        4              324
+3        8              304
+4        7              299
+5        1              295
+6        6              293
+7        3              280
+8        5              276</code></pre>
+</div>
+</div>
+</section>
+<section id="recap" class="level3">
+<h3 class="anchored" data-anchor-id="recap">Recap</h3>
+<p><img src="materials/images/celebration.jpg" class="img-fluid" width="600"></p>
+<ul class="task-list">
+<li><p><label><input type="checkbox" checked="">A forest is too big to worry about, let’s focus on the tree in front of us instead.</label></p></li>
+<li><p><label><input type="checkbox" checked="">Let’s not become fixated on commas and squiggly lines, let’s instead learn the tidyverse framework and use this knowledge to find the resources we need when we need them.</label></p></li>
+<li><p><label><input type="checkbox" checked="">The first two sessions have everything they need in them to start solving real problems in R.</label></p></li>
+</ul>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
