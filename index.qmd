@@ -5,9 +5,9 @@ format: html
 editor: visual
 ---
 
-![](materials/images/logo.png){fig-align="center"}
-
 ## Content
+
+##  ![](materials/images/logo.png){width="191"}
 
 -   Three sessions designed to build the foundations of an enjoyable and efficient experience analysing and transforming data in R.
 

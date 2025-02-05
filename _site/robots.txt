@@ -1,1 +1,1 @@
-Sitemap: https://tjh1988-8.quarto.pub/harry-potter-tidyverse-demonstration/sitemap.xml
+Sitemap: https://tjh1988-8.quarto.pub/harry-potter-r-workshop/sitemap.xml
