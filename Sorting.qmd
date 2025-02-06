@@ -43,7 +43,7 @@ Q: `"I must not be good at this, it keeps breaking"`
 
 *A: Ultimately everyone finds their own way, but i'd argue no, not at all. For most people, coding is a practical rather than theoretical discipline. Getting stuck in is the best way to learn, we sort of are a product of the problems we have solved, not the things we have learned. That doesn't mean that you won't naturally start to remember where the commas and the curly brackets go after a while, but this is not the point or the goal. It would be inefficient (and near impossible) to memorise all of the rules, functions, and tools out there. Instead, each time you solve a problem using code, you get more resilient to errors, more knowledgeable about where and how to access the resources you need to solve just about any problem on the fly, and you generally just become more and more confident that whatever comes up, you'll be able to figure it out.*
 
-## The sorting hat of programming languages ![](materials/images/sorting.png){width="200"}
+## The sorting hat of programming languages ![](materials/images/sorting.png){width="113"}
 
 The sorting hat is about to choose your first language are you ready?
 
@@ -84,7 +84,7 @@ As discussed above, Quarto documents give us nice dedicated places to write our 
 and here's what one looks like:
 
 ```{r}
-print("Hello world!")
+print("Yer a wizard Harry!")
 
 ```
 
@@ -120,11 +120,11 @@ library(tidyverse)
 
 If you want to work with data in R you'll either need to create it or "read it in", so let's read in some Harry potter data. Many types of data can be read into R (e.g., Excel files, Google Sheets, SPSS files etc), but csv files are by far the most common. For those unaware, csvs are like stripped down Excel files that work nicely in R, so you'll be using these a lot.
 
-What you need to know before looking at the code below is that I'm working in an R project called "coffee_and_code". My RStudio now thinks that the coffee_and_code folder on my machine is the centre of the universe. That means that any other file locations on my machine are relative to it. As such, I have a sub-folder in my project called "harry_potter_files". So let's do the following things:
+What you need to know before looking at the code below is that I'm working in an R project called "coffee_and_code". My RStudio now thinks that the coffee_and_code folder on my machine is the centre of the universe. That means that any other file locations on my machine are relative to it. As such, I have a sub-folder in my project called "materials" and another within that called "data. So let's do the following things:
 
 1.  Create an object and let's call it "movies"
 2.  What we want the object "movies" to be is *everything to the right of "\<-"*
-3.  What we want movies to be then is the product of reading in the spreadsheet movies.csv from the folder harry_potter_files which exists inside my R project.
+3.  What we want movies to be then is the product of reading in the spreadsheet movies.csv from the data folder within the materials folder which exists inside my R project.
 
 Altogether that looks like this:
 
