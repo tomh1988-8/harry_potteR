@@ -1,13 +1,13 @@
 ---
-title: "Home"
+title: "Coffee and Code R Workshop"
 author: "Tom Hunter - Data Scientist (City and Guilds)"
 format: html
 editor: visual
 ---
 
-## Content
+![](materials/images/banner.png){fig-align="center" width="500"}
 
-##  ![](materials/images/logo.png){width="191"}
+## Content 
 
 -   Three sessions designed to build the foundations of an enjoyable and efficient experience analysing and transforming data in R.
 
@@ -19,13 +19,13 @@ editor: visual
 
 -   Session 1 is called "Sorting" and focuses on justification for coding, coding in R, and getting set up to start working with data.
 
--   Session 2 is called "Spells" and equips the reader with a spellbook full of tidyverse staple functions.
+-   Session 2 is called "Spells" and equips the reader with a spell book full of tidyverse staple functions.
 
 -   Session 3 is called "Defence Against the Dark Arts" as it grapples with more advanced concepts for those looking to scale up and automate their coding.
 
 ## Contributions
 
--   If the materials could be improved, or i've made a mistake, just let me know via pull request or informal chat.
+-   If the materials could be improved, or I've made a mistake, just let me know via pull request or informal chat.
 
 ## Disclaimer
 
@@ -33,4 +33,4 @@ editor: visual
 
 ## Github
 
-<https://github.com/tomh1988-8/harry_potteR>
+[📂 View the Repo](https://github.com/tomh1988-8/harry_potteR){target="_blank"}
