@@ -1,4 +1,5 @@
 ## Content
+- [Quarto site](https://tjh1988-8.quarto.pub/harry-potter-r-workshop/)
 - Three sessions designed to build the foundations of an enjoyable and efficient experience analysing and transforming data in R.
 - Initially created to mentor and support my colleagues at City and Guilds Coffee and Code club.
 - Uses data and example centred around the theme of the Harry Potter films and books, with data either synthesised or sourced from Kaggle.
