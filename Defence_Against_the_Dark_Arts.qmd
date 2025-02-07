@@ -110,7 +110,7 @@ spell_practice(spell_cast = "Expelliarmus")
 spell_practice(spell_cast = "Wingardium Leviosa")
 ```
 
-Let's step it up a bit and re-enact a full magical battle. Rather than obsess over the actual contents of the battle_simulator function below, I want to try and sell to you how much time and effort was saved and how much more readable the code is now that I don't have to copy and paste and change the code slightly to accomodate all of the multiple variations of it I might want to run. Being able to call it in only one line also makes it practical to use my function in more ambitious ways, which we'll look at below.
+Let's step it up a bit and re-enact a full magical battle. Rather than obsess over the actual contents of the battle_simulator function below, I want to try and sell to you how much time and effort was saved and how much more readable the code is now that I don't have to copy and paste and change the code slightly to accommodate all of the multiple variations of it I might want to run. Being able to call it in only one line also makes it practical to use my function in more ambitious ways, which we'll look at below.
 
 Spoken translation:
 
