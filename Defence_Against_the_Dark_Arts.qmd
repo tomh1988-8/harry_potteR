@@ -32,7 +32,7 @@ characters <- read.csv(file = here("materials", "data", "Characters.csv"))
 
 A compulsory reminder which is relevant now more than ever is to not worry about the commas and squiggly lines, `focus instead on the gist - the basic principles of what we are setting out to do and why.` If you have these, then you can always seek out one of many available resources online to fill in the gaps if and when needed.
 
-Think of an =IF() or an =IFELSE() in Excel. The basic idea that we carry out an operation based on a condition is one of the most fundamental and powerful principles in programming. In Excel, however, `it becomes quite laborious quite quickly to extend the logic within an =IF() statement to accomodate more complicated tasks and the formula quickly becomes unmanageable`. This is a lot more manageable in R and after you wrap your head around it you can achieve spectacularly complex feats of data manipulation and transformation.
+Think of an =IF() or an =ELSEIF() in Excel. The basic idea that we carry out an operation based on a condition is one of the most fundamental and powerful principles in programming. In Excel, however, `it becomes quite laborious quite quickly to extend the logic within an =IF() statement to accomodate more complicated tasks and the formula quickly becomes unmanageable`. This is a lot more manageable in R and after you wrap your head around it you can achieve spectacularly complex feats of data manipulation and transformation.
 
 The following examples relies on data sets - one on Harry Potter characters, and the other one spells. Check them out below:
 
