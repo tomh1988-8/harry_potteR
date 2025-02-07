@@ -1,5 +1,5 @@
 ---
-title: "Coffee and Code R Workshop"
+title: "Coffee and Code R Workshop <img src='materials/images/cng.png' style='float: right; height: 75px;'>"
 author: "Tom Hunter - Data Scientist (City and Guilds)"
 format: html
 editor: visual
@@ -15,11 +15,11 @@ editor: visual
 
 ## Sections
 
--   Session 1 is called "Sorting" and focuses on justification for coding, coding in R, and getting set up to start working with data.
+-   Session 1 is called "`Sorting`" and focuses on justification for coding, coding in R, and getting set up to start working with data.
 
--   Session 2 is called "Spells" and equips the reader with a spell book full of tidyverse staple functions.
+-   Session 2 is called "`Spells`" and equips the reader with a spell book full of tidyverse staple functions.
 
--   Session 3 is called "Defence Against the Dark Arts" as it grapples with more advanced concepts for those looking to scale up and automate their coding.
+-   Session 3 is called "`Defence Against the Dark Arts`" as it grapples with more advanced concepts for those looking to scale up and automate their coding.
 
 ## Contributions
 

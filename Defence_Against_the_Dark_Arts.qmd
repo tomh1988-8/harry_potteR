@@ -1,5 +1,5 @@
 ---
-title: "Session 3: Defence Against the Dark Arts"
+title: "Session 3: Defence Against the Dark Arts <img src='materials/images/cng.png' style='float: right; height: 75px;'>"
 author: "Tom Hunter - Data Scientist (City and Guilds)"
 format: 
   html:
