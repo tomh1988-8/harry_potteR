@@ -116,14 +116,46 @@ The point? There are a lot of clever people out there having difficult conversat
 library(tidyverse)
 ```
 
+#### What is an object?
+
+Tip: Whenever you see *"`<-`"* I want you to think: *`Let's remember this`*. What's an object I heard you say? Well, let's explore below example:
+
+```{r}
+x <- 5+12+87+92+18888888888.999963648274
+y <- 5039245 + 6.12431234 + 790879.777798
+z <- x + y
+print(z)
+
+```
+
+Here we have some ridiculous sums. I literally just button bashed the numbers. But imagine for a moment that they are important calculations. How annoying would it be to have to type "*5+12+87+92+18888888888.999963648274*" instead of just "*x*"?. `I would give up and open a Bakery or something, nope, not for me thank you very much. Instead i'd rather have the machine remember that, because they are pretty good at that sort of thing.` Apart just being tidy and convenient, it also paves the way for much more complicated calculations that we wouldn't have been able to cope with if we could not make use of our machine's resources, here by committing some expressions to memory, like below:
+
+```{r}
+
+p <- (z + x*0.3)/(y*x)*x/y/z
+print(p)
+
+```
+
+Now please don't waste your time trying to unpack that ridiculous sum above, I just button bashed it again. I just want you to imagine how brutal it would be to build more complicated structures without being able to stash objects away in memory.
+
+And finally, I've been using the word "object" very broadly as you can store lots of things, its doesn't have to be numbers. It can be text:
+
+```{r}
+headmaster <- "Dumbledore"
+print(headmaster)
+```
+
+or full spreadsheets, which when working in R we'll call dataframes. Let's do just that!
+
 ## Reading in data
 
 If you want to work with data in R you'll either need to create it or "read it in", so let's read in some Harry potter data. Many types of data can be read into R (e.g., Excel files, Google Sheets, SPSS files etc), but csv files are by far the most common. For those unaware, csvs are like stripped down Excel files that work nicely in R, so you'll be using these a lot.
 
 What you need to know before looking at the code below is that I'm working in an R project called "coffee_and_code". My RStudio now thinks that the coffee_and_code folder on my machine is the centre of the universe. That means that any other file locations on my machine are relative to it. As such, I have a sub-folder in my project called "materials" and another within that called "data. So let's do the following things:
 
-1.  Create an object and let's call it "movies"
-2.  What we want the object "movies" to be is *everything to the right of "\<-"*
+1.  Create an object and let's call it "movies".
+2.  What we want the object "movies" to be is *everything to the right of "`<-`"*
 3.  What we want movies to be then is the product of reading in the spreadsheet movies.csv from the data folder within the materials folder which exists inside my R project.
 
 Altogether that looks like this:
