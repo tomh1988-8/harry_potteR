@@ -112,7 +112,7 @@ spell_practice(spell_cast = "Expelliarmus")
 spell_practice(spell_cast = "Wingardium Leviosa")
 ```
 
-Note that our first function just returns some print outs. More than not, they will return data, e.g., in a dataframe. This means our template wrapper will look like this:
+Note that our first function just returns some print outs. More often than not, they will return data, e.g., in a dataframe. This means our template wrapper will look like this:
 
 ```{r}
 example_function <- function(data) {
