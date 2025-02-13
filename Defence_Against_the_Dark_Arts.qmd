@@ -1,6 +1,6 @@
 ---
 title: "Session 3: Defence Against the Dark Arts <img src='materials/images/cng.png' style='float: right; height: 75px;'>"
-author: "Tom Hunter - Data Scientist (City and Guilds)"
+author: "Tom Hunter - Data Scientist (AOT Data Science)"
 format: 
   html:
     theme: default
